@@ -2,12 +2,18 @@ import express from "express";
 import session from "express-session";
 import dotEnv from "dotenv";
 import passport from "passport";
-import { Strategy as GoogleStrategy } from "passport-google-oauth2";
-// import { initializeApp } from 'firebase/app';
-// import { getFirestore } from "firebase/firestore";
+import {
+  Strategy as GoogleStrategy
+} from "passport-google-oauth2";
+import {
+  initializeApp
+} from "firebase/app";
+import {
+  getFirestore, addDoc, collection
+} from "firebase/firestore";
 
 dotEnv.config({
-    path: './.env',
+  path: './.env',
 });
 
 const app = express();
@@ -15,43 +21,45 @@ const app = express();
 app.use(session({
   resave: false,
   saveUninitialized: true,
-  secret: 'SECRET' 
+  secret: 'SECRET'
 }));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({
+  extended: false
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.serializeUser(function(user, cb) {
+passport.serializeUser(function (user, cb) {
   cb(null, user);
 });
- 
-passport.deserializeUser(function(obj, cb) {
+
+passport.deserializeUser(function (obj, cb) {
   cb(null, obj);
 });
 
 // initialize firebase
-// const firebaseConfig = {
-//   apiKey: "AIzaSyDwkPfOglLaGzGCo-OBFp7r63nxfX-zkRA",
-//   authDomain: "chatbot-dialogflow-api.firebaseapp.com",
-//   projectId: "chatbot-dialogflow-api",
-//   storageBucket: "chatbot-dialogflow-api.appspot.com",
-//   messagingSenderId: "57495981958",
-//   appId: "1:57495981958:web:07c0459739ef7bc8aa6607",
-//   measurementId: "G-D2HW0WTDVB"
-// };
-// const appFirebase = initializeApp(firebaseConfig);
-// const db = getFirestore(appFirebase);
+const firebaseConfig = {
+  apiKey: "AIzaSyDwkPfOglLaGzGCo-OBFp7r63nxfX-zkRA",
+  authDomain: "chatbot-dialogflow-api.firebaseapp.com",
+  projectId: "chatbot-dialogflow-api",
+  storageBucket: "chatbot-dialogflow-api.appspot.com",
+  messagingSenderId: "57495981958",
+  appId: "1:57495981958:web:07c0459739ef7bc8aa6607",
+  measurementId: "G-D2HW0WTDVB"
+};
+const appFirebase = initializeApp(firebaseConfig);
+const db = getFirestore(appFirebase);
 
 // initialize google auth
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const GOOGLE_CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL;
 const SCOPE = [
-    'https://www.googleapis.com/auth/cloud-platform',
-    'https://www.googleapis.com/auth/dialogflow',
-    'profile', 
-    'email'
+  'https://www.googleapis.com/auth/cloud-platform',
+  'https://www.googleapis.com/auth/dialogflow',
+  'profile',
+  'email'
 ];
 
 var userProfile;
@@ -62,8 +70,8 @@ passport.use(new GoogleStrategy({
     callbackURL: GOOGLE_CALLBACK_URL,
     passReqToCallback: true
   },
-  function(request, accessToken, refreshToken, profile, done) {
-    userProfile=profile;
+  function (request, accessToken, refreshToken, profile, done) {
+    userProfile = profile;
     userProfile.accessToken = accessToken;
     userProfile.refreshToken = refreshToken;
     return done(null, userProfile);
@@ -80,33 +88,40 @@ app.listen(port, host, () => {
 
 // untuk home
 app.get('/', function (req, res) {
-    res.send('Hello World!');
+  res.send('Hello World!');
 });
 
 // begin:: firebase
 app.post('/create', async (req, res) => {
-  const data = req.body;
-  res.send(data);
+  try {
+    const data = req.body;
+    const docRef = await addDoc(collection(db, "Users"), data);
+    res.send('Create data berhasil ' + docRef.id);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
 });
 // end:: firebase
 
 // begin:: google auth
 // untuk success
 app.get('/auth/google/success', (req, res) => {
-    res.send("Berhasil login dengan akun google milik " + JSON.stringify(userProfile));
+  res.send("Berhasil login dengan akun google milik " + JSON.stringify(userProfile));
 });
 
 // untuk failure
 app.get('/auth/google/failure', (req, res) => {
-    res.send('Login gagal');
+  res.send('Login gagal');
 });
 
 // untuk login
-app.get('/auth/google', passport.authenticate('google', { scope : SCOPE}));
- 
+app.get('/auth/google', passport.authenticate('google', {
+  scope: SCOPE
+}));
+
 // untuk callback
 app.get('/auth/google/callback', passport.authenticate('google', {
-    successRedirect: '/auth/google/success',
-    failureRedirect: '/auth/google/failure'
+  successRedirect: '/auth/google/success',
+  failureRedirect: '/auth/google/failure'
 }));
 // end:: google auth
