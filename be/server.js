@@ -9,8 +9,12 @@ import {
   initializeApp
 } from "firebase/app";
 import {
-  getFirestore, addDoc, collection
+  getFirestore,
+  collection,
+  getDocs,
+  addDoc
 } from "firebase/firestore";
+import dialogflow from "dialogflow";
 
 dotEnv.config({
   path: './.env',
@@ -92,7 +96,8 @@ app.get('/', function (req, res) {
 });
 
 // begin:: firebase
-app.post('/create', async (req, res) => {
+// untuk create
+app.post('/firebase/create', async (req, res) => {
   try {
     const data = req.body;
     const docRef = await addDoc(collection(db, "Users"), data);
@@ -101,7 +106,116 @@ app.post('/create', async (req, res) => {
     res.status(400).send(error.message);
   }
 });
+
+// untuk read
+app.get('/firebase/read', async (req, res) => {
+  try {
+    const users = collection(db, 'Users');
+    const usersSnapshot = await getDocs(users);
+    const usersList = usersSnapshot.docs.map(doc => doc.data());
+    res.send(usersList);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+});
+
+// untuk read by
+app.get('/firebase/read/:any', async (req, res) => {
+  try {
+    const users = collection(db, 'Users');
+    const usersSnapshot = await getDocs(users);
+    const usersList = usersSnapshot.docs.map(doc => doc.data());
+    const user = usersList.find(user => user.email === req.params.any);
+    if (user == null) {
+      return res.send('User tidak ditemukan');
+    } else {
+      return res.send(user);
+    }
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+});
+
+// untuk update
+app.put('/firebase/update/:any', async (req, res) => {
+  try {
+    const users = collection(db, 'Users');
+    const usersSnapshot = await getDocs(users);
+    const usersList = usersSnapshot.docs.map(doc => doc.data());
+    const user = usersList.find(user => user.email === req.params.any);
+    if (user == null) {
+      return res.send('User tidak ditemukan');
+    } else {
+      const data = req.body;
+      const docRef = await addDoc(collection(db, "Users"), data);
+      res.send('Update data berhasil ' + docRef.id);
+    }
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+});
 // end:: firebase
+
+// begin:: dialogflow
+// untuk detect intent
+app.post('/dialogflow/detect', async (req, res) => {
+  try {
+    const data = req.body;
+    
+    const credentials = JSON.parse(process.env.DIALOGFLOW_CREDENTIALS);
+    const projectId = credentials.project_id;
+    const sessionId = 'Testing';
+    const languageCode = 'id-ID';
+
+    const config = {
+      credentials: {
+        private_key: credentials.private_key,
+        client_email: credentials.client_email,
+      }
+    };
+
+    // Create a new session
+    const sessionClient = new dialogflow.SessionsClient(config);
+    const sessionPath = sessionClient.sessionPath(projectId, sessionId);
+
+    // The text query request.
+    const request = {
+      session: sessionPath,
+      queryInput: {
+        text: {
+          text: data.query,
+          languageCode: languageCode,
+        },
+      },
+    };
+
+    // Send request and log result
+    const responses = await sessionClient.detectIntent(request);
+    console.log('Detected intent');
+    res.send(responses);
+    const result = responses[0].queryResult;
+    console.log('Query: ' + data.query);
+    console.log('Response: ' + result.fulfillmentText);
+    if (result.intent) {
+      console.log(' Intent: ' + result.intent.displayName);
+    } else {
+      console.log('No intent matched.');
+    }
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+});
+
+// untuk webhook
+app.post('/dialogflow/webhook', async (req, res) => {
+  try {
+    const data = req.body;
+    res.send(data);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+});
+// end:: dialogflow
 
 // begin:: google auth
 // untuk success
