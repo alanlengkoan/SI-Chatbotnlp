@@ -12,3 +12,7 @@
 - Tailwind CSS 2
 - Vue 3
 - Vite
+
+## Referensi
+- https://developers.google.com/people/quickstart/nodejs
+- https://www.loginradius.com/blog/engineering/google-authentication-with-nodejs-and-passportjs
