@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col items-center justify-center w-screen min-h-screen bg-gray-100 text-gray-800">
-        <!-- Component Start -->
+        <!-- begin:: chat template -->
         <div class="flex flex-col flex-grow w-full max-w-xl bg-white shadow-xl rounded-lg overflow-hidden">
             <div class="relative flex items-center p-3 border-b border-gray-300">
                 <img class="object-cover w-10 h-10 rounded-full"
@@ -146,7 +146,7 @@
                 </button>
             </div>
         </div>
-        <!-- Component End  -->
+        <!-- end:: chat template -->
     </div>
 </template>
 
