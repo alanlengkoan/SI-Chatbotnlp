@@ -1,4 +1,4 @@
-import express from "express";
+import express, { text } from "express";
 import session from "express-session";
 import dotEnv from "dotenv";
 import passport from "passport";
@@ -12,7 +12,10 @@ import {
   getFirestore,
   collection,
   getDocs,
-  addDoc
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc
 } from "firebase/firestore";
 import dialogflow from "dialogflow";
 
@@ -112,7 +115,7 @@ app.get('/firebase/read', async (req, res) => {
   try {
     const users = collection(db, 'Users');
     const usersSnapshot = await getDocs(users);
-    const usersList = usersSnapshot.docs.map(doc => doc.data());
+    const usersList = usersSnapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
     res.send(usersList);
   } catch (error) {
     res.status(400).send(error.message);
@@ -124,7 +127,7 @@ app.get('/firebase/read/:any', async (req, res) => {
   try {
     const users = collection(db, 'Users');
     const usersSnapshot = await getDocs(users);
-    const usersList = usersSnapshot.docs.map(doc => doc.data());
+    const usersList = usersSnapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
     const user = usersList.find(user => user.email === req.params.any);
     if (user == null) {
       return res.send('User tidak ditemukan');
@@ -141,14 +144,32 @@ app.put('/firebase/update/:any', async (req, res) => {
   try {
     const users = collection(db, 'Users');
     const usersSnapshot = await getDocs(users);
-    const usersList = usersSnapshot.docs.map(doc => doc.data());
+    const usersList = usersSnapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
     const user = usersList.find(user => user.email === req.params.any);
     if (user == null) {
       return res.send('User tidak ditemukan');
     } else {
       const data = req.body;
-      const docRef = await addDoc(collection(db, "Users"), data);
-      res.send('Update data berhasil ' + docRef.id);
+      await updateDoc(doc(db, "Users", user.id), data);
+      res.send('Update data berhasil ' + user.id);
+    }
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+});
+
+// untuk delete
+app.delete('/firebase/delete/:any', async (req, res) => {
+  try {
+    const users = collection(db, 'Users');
+    const usersSnapshot = await getDocs(users);
+    const usersList = usersSnapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
+    const user = usersList.find(user => user.email === req.params.any);
+    if (user == null) {
+      return res.send('User tidak ditemukan');
+    } else {
+      await deleteDoc(doc(db, "Users", user.id));
+      res.send('Delete data berhasil ' + user.id);
     }
   } catch (error) {
     res.status(400).send(error.message);
@@ -189,18 +210,13 @@ app.post('/dialogflow/detect', async (req, res) => {
       },
     };
 
-    // Send request and log result
-    const responses = await sessionClient.detectIntent(request);
-    console.log('Detected intent');
-    res.send(responses);
-    const result = responses[0].queryResult;
-    console.log('Query: ' + data.query);
-    console.log('Response: ' + result.fulfillmentText);
-    if (result.intent) {
-      console.log(' Intent: ' + result.intent.displayName);
-    } else {
-      console.log('No intent matched.');
-    }
+    await sessionClient.detectIntent(request);
+    await addDoc(collection(db, "Chats"), data);
+
+    res.status(200).send({
+      message: "Berhasil",
+      text: "Berhasil menambahkan chat ke firebase"
+    });
   } catch (error) {
     res.status(400).send(error.message);
   }
@@ -210,7 +226,21 @@ app.post('/dialogflow/detect', async (req, res) => {
 app.post('/dialogflow/webhook', async (req, res) => {
   try {
     const data = req.body;
-    res.send(data);
+    const result = data.queryResult;
+
+    const post = {
+      id_account: "-",
+      type: "bot",
+      query: result.queryText,
+      message: result.fulfillmentText,
+    };
+
+    await addDoc(collection(db, "Chats"), post);
+
+    res.status(200).send({
+      message: "Berhasil",
+      text: "Berhasil menambahkan chat ke firebase"
+    });
   } catch (error) {
     res.status(400).send(error.message);
   }

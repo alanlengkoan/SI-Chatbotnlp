@@ -1,7 +1,7 @@
 {
-  "name": "be",
+  "name": "chatbot-nlp-dialogflow-firebase-nodejs",
   "version": "1.0.0",
-  "description": "Chatbot NLP ",
+  "description": "Chatbot NLP menggunakan Dialogflow, Firebase dan NodeJS",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/dialogflow": "^5.8.0",
     "dialogflow": "^1.2.0",
     "dotenv": "^16.1.4",
     "express": "^4.18.2",
