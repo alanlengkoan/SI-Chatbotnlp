@@ -5,7 +5,7 @@
             <div class="relative flex items-center p-3 border-b border-gray-300">
                 <img class="object-cover w-10 h-10 rounded-full"
                     src="https://cdn.pixabay.com/photo/2018/01/15/07/51/woman-3083383__340.jpg" alt="username" />
-                <span class="block ml-2 font-bold text-gray-600">Emma</span>
+                <span class="block ml-2 font-bold text-gray-600">Alan Lengkoan</span>
                 <span class="absolute w-3 h-3 bg-green-600 rounded-full left-10 top-3">
                 </span>
             </div>
@@ -13,131 +13,20 @@
                 <ul class="space-y-2">
                     <li class="flex justify-start">
                         <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Hi</span>
+                            <span class="block">Hi, Alan Lengkoan</span>
                         </div>
                     </li>
-                    <li class="flex justify-end">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
-                            <span class="block">Hiiii</span>
-                        </div>
-                    </li>
-                    <li class="flex justify-end">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
-                            <span class="block">how are you?</span>
-                        </div>
-                    </li>
-                    <li class="flex justify-start">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
-                        </div>
-                    </li>
-                    <li class="flex justify-start">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
-                        </div>
-                    </li>
-                    <li class="flex justify-start">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
-                        </div>
-                    </li>
-                    <li class="flex justify-start">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
-                        </div>
-                    </li>
-                    <li class="flex justify-start">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
-                        </div>
-                    </li>
-                    <li class="flex justify-start">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
-                        </div>
-                    </li>
-                    <li class="flex justify-start">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
-                        </div>
-                    </li>
-                    <li class="flex justify-start">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
-                        </div>
-                    </li>
-                    <li class="flex justify-start">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
-                        </div>
-                    </li>
-                    <li class="flex justify-start">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
-                        </div>
-                    </li>
-                    <li class="flex justify-start">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
-                        </div>
-                    </li>
-                    <li class="flex justify-start">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
-                        </div>
-                    </li>
-                    <li class="flex justify-start">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
-                        </div>
-                    </li>
-                    <li class="flex justify-start">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
-                        </div>
-                    </li>
-                    <li class="flex justify-start">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
-                        </div>
-                    </li>
-                    <li class="flex justify-start">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
-                        </div>
-                    </li>
-                    <li class="flex justify-start">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
-                        </div>
-                    </li>
-                    <li class="flex justify-start">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
-                        </div>
-                    </li>
-                    <li class="flex justify-start">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
-                        </div>
-                    </li>
-                    <li class="flex justify-start">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
-                        </div>
-                    </li>
-                    <li class="flex justify-start">
-                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                            <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
+                    <li v-bind:class="(row.type === 'user' ? 'flex justify-end' : 'flex justify-start')" v-for="row in chat" :key="row.id">
+                        <div v-bind:class="(row.type === 'user' ? 'relative max-w-xl px-4 py-2 text-gray-700 rounded shadow' : 'relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow')">
+                            <span class="block">{{ (row.type === 'user' ? row.query : row.message) }}</span>
                         </div>
                     </li>
                 </ul>
             </div>
             <div class="relative flex items-center justify-between w-full p-3 border-t border-gray-300">
-                <input type="text" placeholder="Message"
-                    class="block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700"
-                    name="message" required />
-                <button type="submit">
+                <input type="text" class="block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700"
+                    ref="query" :placeholder="query" required />
+                <button type="submit" @click="postChat">
                     <svg class="w-5 h-5 text-gray-500 origin-center transform rotate-90"
                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                         <path
@@ -151,8 +40,48 @@
 </template>
 
 <script>
+import http from '../axios';
 
+export default {
+    name: 'Chat',
+    data() {
+        return {
+            query: 'Message',
+            chat: []
+        }
+    },
+    methods: {
+        async getChat() {
+            try {
+                http.get('/dialogflow/chat').then((response) => {
+                    this.chat = response.data.data;
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async postChat() {
+            try {
+                const query = this.$refs.query.value;
+                const data = {
+                    id_account: "-",
+                    type: "user",
+                    query: query,
+                    message: "-",
+                    date:  new Date()
+                }
+
+                await http.post('/dialogflow/detect', data);
+
+                this.$refs.query.value = '';
+                this.getChat();
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    },
+    mounted() {
+        this.getChat();
+    }
+}
 </script>
-
-<style scoped>
-</style>

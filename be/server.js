@@ -2,6 +2,7 @@ import express, { text } from "express";
 import session from "express-session";
 import dotEnv from "dotenv";
 import passport from "passport";
+import cors from "cors";
 import {
   Strategy as GoogleStrategy
 } from "passport-google-oauth2";
@@ -15,7 +16,8 @@ import {
   addDoc,
   updateDoc,
   deleteDoc,
-  doc
+  doc,
+  Query
 } from "firebase/firestore";
 import dialogflow from "dialogflow";
 
@@ -25,15 +27,28 @@ dotEnv.config({
 
 const app = express();
 
+// untuk cors
+app.use(cors({
+  origin: 'http://127.0.0.1:5173',
+  optionsSuccessStatus: 200
+}));
+
+// untuk session
 app.use(session({
   resave: false,
   saveUninitialized: true,
   secret: 'SECRET'
 }));
+
+// untuk json
 app.use(express.json());
+
+// untuk urlencoded
 app.use(express.urlencoded({
   extended: false
 }));
+
+// untuk passport
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -87,7 +102,7 @@ passport.use(new GoogleStrategy({
 
 // untuk host
 const port = process.env.PORT;
-const host = "127.0.0.1";
+const host = "localhost";
 
 app.listen(port, host, () => {
   console.log(`Server sedang berjalan pada http://${host}:${port}`);
@@ -178,6 +193,22 @@ app.delete('/firebase/delete/:any', async (req, res) => {
 // end:: firebase
 
 // begin:: dialogflow
+// untuk read chat
+app.get('/dialogflow/chat', async (req, res) => {
+  try {
+    const chats = collection(db, 'Chats');
+    const chatsSnapshot = await getDocs(chats);
+    const chatsList = chatsSnapshot.docs.map(doc => ({id: doc.id, ...doc.data()})).sort((a, b) => b.date.localeCompare(a.date)).reverse();
+    res.status(200).json({
+      status: "Success",
+      message: "Success",
+      data: chatsList,
+    });
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+});
+
 // untuk detect intent
 app.post('/dialogflow/detect', async (req, res) => {
   try {
@@ -233,6 +264,7 @@ app.post('/dialogflow/webhook', async (req, res) => {
       type: "bot",
       query: result.queryText,
       message: result.fulfillmentText,
+      date: new Date().toISOString(),
     };
 
     await addDoc(collection(db, "Chats"), post);
