@@ -1,10 +1,9 @@
-<script setup>
-import Chat from './components/Chat.vue';
-</script>
-
 <template>
-  <Chat />
+  <RouterView />
 </template>
+
+<script>
+</script>
 
 <style scoped>
 </style>
