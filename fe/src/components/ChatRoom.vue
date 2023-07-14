@@ -1,56 +1,42 @@
 <template>
-    <div>
-        <p class="text-gray-500">Welcome, {{ nama }}</p>
-        <p class="text-gray-500">Email: {{ email }}</p>
-        <img :src="photoURL" alt="photo" class="w-20 h-20 rounded-full object-cover mt-2">
-
-        <button @click="handleLogout"
-            class="px-4 py-2 mt-2 text-white bg-blue-500 rounded hover:bg-blue-600">Logout</button>
-    </div>
-
-    <div class="container mx-auto p-4">
-            <h1 class="text-2xl font-bold mb-4">Chat with Friend</h1>
-
-            <div class="flex flex-col h-80">
-                <div class="flex-1 overflow-y-auto bg-gray-100 p-4 rounded-lg shadow-md">
-                    <!-- Chat messages -->
-                    <div class="flex flex-col space-y-2">
-                        <div class="flex">
-                            <div class="rounded-full bg-blue-500 h-8 w-8 flex items-center justify-center text-white mr-2">
-                                <span>Me</span>
-                            </div>
-                            <div class="bg-blue-200 text-gray-700 rounded-lg py-2 px-4">
-                                <p>Hello!</p>
-                                <p>How are you?</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-row-reverse">
-                            <div
-                                class="rounded-full bg-purple-500 h-8 w-8 flex items-center justify-center text-white ml-2">
-                                <span>Friend</span>
-                            </div>
-                            <div class="bg-purple-200 text-gray-700 rounded-lg py-2 px-4">
-                                <p>Hi!</p>
-                                <p>I'm good, thanks. How about you?</p>
-                            </div>
-                        </div>
-                        <!-- Repeat the chat messages for each conversation -->
+    <div class="flex flex-col items-center justify-center w-screen min-h-screen bg-gray-100 text-gray-800">
+        <div class="flex flex-col flex-grow w-full max-w-xl bg-white shadow-xl rounded-lg overflow-hidden">
+            <!-- begin:: chat template -->
+            <div class="relative flex justify-between p-3 border-b border-gray-300">
+                <div class="flex items-center">
+                    <img class="object-cover w-10 h-10 rounded-full" :src="photoURL" :alt="nama" />
+                    <span class="block ml-2 font-bold text-gray-600">{{ nama }}</span>
+                    <span class="absolute w-3 h-3 bg-green-600 rounded-full left-10 top-3"></span>
+                </div>
+                <div class="relative">
+                    <button @click="show = !show" class="items-center p-2">
+                        <font-awesome-icon icon="fa-solid fa-bars" />
+                    </button>
+                    <div v-show="show" class="absolute right-0 py-2 mt-2 bg-white rounded-md shadow-xl w-44">
+                        <button @click="handleLogout" class="block px-4 py-2 text-sm text-gray-800 hover:text-gray-400">Logout</button>
                     </div>
                 </div>
-
-                <div class="mt-4">
-                    <form>
-                        <div class="flex">
-                            <input type="text"
-                                class="flex-1 rounded-l-lg border border-gray-300 px-4 py-2 focus:outline-none"
-                                placeholder="Type your message...">
-                            <button type="submit"
-                                class="bg-blue-500 hover:bg-blue-600 rounded-r-lg px-4 py-2 text-white">Send</button>
-                        </div>
-                    </form>
-                </div>
             </div>
+            <div class="flex flex-col flex-grow h-0 p-4 overflow-auto">
+                <ul class="space-y-2" ref="messagges">
+                    <li v-bind:class="(row.uid === this.uid ? 'flex justify-end' : 'flex justify-start')" v-for="row in messages" :key="row.id">
+                        <div v-bind:class="(row.uid === this.uid ? 'relative max-w-xl px-4 py-2 text-gray-700 rounded shadow' : 'relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow')">
+                            <span class="block">{{ row.message }}</span>
+                            <p class="text-xs text-right text-gray-400">{{ convertDate(row.created_at) }}</p>
+                        </div>
+                    </li>
+                    <div ref="bottom"></div>
+                </ul>
+            </div>
+            <div class="relative flex items-center justify-between w-full p-3 border-t border-gray-300">
+                <input type="text" @keypress.enter="sendMesagge" class="block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700" ref="message" :placeholder="message" required />
+                <button type="submit" @click="sendMesagge">
+                  <font-awesome-icon icon="fa-solid fa-paper-plane" />
+                </button>
+            </div>
+            <!-- end:: chat template -->
         </div>
+    </div>
 </template>
 
 <script>
@@ -59,14 +45,29 @@ import {
     getAuth,
     signOut,
 } from "firebase/auth";
+import {
+    getFirestore,
+    collection,
+    orderBy,
+    addDoc,
+    serverTimestamp,
+    onSnapshot,
+    query
+} from "firebase/firestore";
+import {ref, onUnmounted, nextTick, watch} from 'vue';
 
 firebase
 const auth = getAuth();
+const db = getFirestore(firebase);
 
 export default {
     name: 'ChatRoom',
     data() {
         return {
+            show: false,
+            message: 'Message',
+            messages: ref([]),
+            uid: '',
             nama: '',
             email: '',
             photoURL: '',
@@ -76,6 +77,7 @@ export default {
         loadUser() {
             let user = JSON.parse(localStorage.getItem('user'));
 
+            this.uid = user.uid;
             this.nama = user.name;
             this.email = user.email;
             this.photoURL = user.photo;
@@ -83,6 +85,7 @@ export default {
         handleLogout() {
             signOut(auth).then(() => {
                 // Sign-out successful.
+                this.uid = '';
                 this.user = '';
                 this.email = '';
                 this.photoURL = '';
@@ -95,10 +98,74 @@ export default {
             }).catch((error) => {
                 console.log(error);
             });
+        },
+        convertDate(date) {
+            if (date === null) {
+                return '';
+            } else {
+                let convertDate = date.toDate();
+                let d = new Date(convertDate);
+                let hours = d.getHours();
+                let minutes = d.getMinutes();
+                let seconds = d.getSeconds();
+                let ampm = hours >= 12 ? 'PM' : 'AM';
+                let strTime = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
+                return strTime;
+            }
+        },
+        getChat() {
+            try {
+                const q = query(collection(db, "Messages"), orderBy('created_at', 'asc'));
+                const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                   this.messages = querySnapshot.docs.map((doc) => ({
+                       id: doc.id,
+                       ...doc.data()
+                   }));
+
+                   
+                    nextTick(() => {
+                        this.$refs.bottom?.scrollIntoView({ behavior: 'smooth' });
+                    });
+                });
+
+                onUnmounted(unsubscribe);
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        sendMesagge() {
+            try {
+                if (this.$refs.message.value === '') {
+                    return;
+                }
+
+                const table = collection(db, "Messages");
+
+                const data = {
+                    uid: this.uid,
+                    nama: this.nama,
+                    email: this.email,
+                    photo: this.photoURL,
+                    message: this.$refs.message.value,
+                    created_at: serverTimestamp()
+                }
+
+                addDoc(table, data).then((docRef) => {
+                    console.log('Create data messages berhasil ' + docRef.id);
+                }).catch((error) => {
+                    console.log(error);
+                });
+
+                this.$refs.bottom?.scrollIntoView({ behavior: 'smooth' });
+                this.$refs.message.value = '';
+            } catch (error) {
+                console.log(error);
+            }
         }
     },
     mounted() {
         this.loadUser();
+        this.getChat();
     }
 }
 </script>
