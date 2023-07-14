@@ -2,20 +2,27 @@ import {
     createRouter,
     createWebHistory
 } from 'vue-router'
-import WelcomeVue from '../components/Welcome.vue'
-import ChatRoomVue from '../components/ChatRoom.vue'
+import WelcomeView from '../views/Welcome.vue'
+import ChatView from '../views/Chat.vue'
+import ProfilView from '../views/Profil.vue'
 
 const router = createRouter({
     history: createWebHistory(),
-    routes: [{
-            path: '/',
+    routes: [
+        {
+            path: '/welcome',
             name: 'welcome',
-            component: WelcomeVue
+            component: WelcomeView
         },
         {
-            path: '/chat-room',
-            name: 'chatroom',
-            component: ChatRoomVue,
+            path: '/',
+            name: 'home',
+            component: ChatView
+        },
+        {
+            path: '/profil',
+            name: 'profil',
+            component: ProfilView
         },
     ]
 })
@@ -30,7 +37,7 @@ router.beforeEach((to, from, next) => {
         });
     } else if (to.name === 'welcome' && isAuthenticated) {
         next({
-            name: 'chatroom'
+            name: 'home'
         });
     } else {
         next();
